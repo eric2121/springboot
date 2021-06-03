@@ -9,27 +9,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+@RestController
+@RequestMapping(path = "/api/film")
 public class FilmController {
     @Autowired
     private FilmDAO filmDAO;
 
-    @GetMapping("/api/film/{id}")
+    @GetMapping("/{id}")
     Film un (@PathVariable Long id) {
         return (filmDAO.getFilmById(id));
     }
 
     @PostMapping(
-        path = "/api/film",
+        path = "",
         consumes = "application/json",
         produces = "application/json")
 
-    public ResponseEntity<Object> addEmployee(
-        @RequestBody Film film)
+    public ResponseEntity<Object> addEmployee(@RequestBody Film film)
     {
+        setFilmIds(film);
         filmDAO.addFilm(film);
 
         URI location
@@ -43,5 +44,18 @@ public class FilmController {
         return ResponseEntity
             .created(location)
             .build();
+    }
+
+    private void setFilmIds(Film film){
+        long nextFreeId = filmDAO.getNextFreeId();
+        film.setId(nextFreeId);
+        nextFreeId++;
+
+        for (Acteur acteur : film.getActeurs())  {
+            acteur.setId(nextFreeId);
+            nextFreeId++;
+        }
+        filmDAO.setNextFreeId(nextFreeId);
+
     }
 }

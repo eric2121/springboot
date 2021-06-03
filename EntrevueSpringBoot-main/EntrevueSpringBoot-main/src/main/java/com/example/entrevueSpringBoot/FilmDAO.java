@@ -7,8 +7,17 @@ import org.springframework.stereotype.Repository;
 public class FilmDAO {
 
     private static Films list = new Films();
+    private static Long nextFreeId = (long)1;
 
-     Films getAllFilms() {
+    public Long getNextFreeId() {
+        return nextFreeId;
+    }
+
+    public void setNextFreeId(Long nextFreeId) {
+        FilmDAO.nextFreeId = nextFreeId;
+    }
+
+     public Films getAllFilms() {
         return list;
     }
 
@@ -20,4 +29,5 @@ public class FilmDAO {
         list.getFilmList().put(film.getId(), film);
 
     }
+
 }
