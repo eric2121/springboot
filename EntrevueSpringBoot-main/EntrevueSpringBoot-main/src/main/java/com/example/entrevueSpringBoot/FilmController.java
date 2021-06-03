@@ -23,11 +23,12 @@ public class FilmController {
         return (filmDAO.getFilmById(id));
     }
 
-    @PostMapping(
-        path = "",
-        consumes = "application/json",
-        produces = "application/json")
+    @GetMapping(path = "",produces = "application/json")
+    public Films getAllFilms(){
+        return filmDAO.getAllFilms();
+    }
 
+    @PostMapping(path = "", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> addEmployee(@RequestBody Film film)
     {
         setFilmIds(film);
@@ -56,6 +57,5 @@ public class FilmController {
             nextFreeId++;
         }
         filmDAO.setNextFreeId(nextFreeId);
-
     }
 }
